@@ -1,0 +1,16 @@
+oilp:
+	idle: v19
+		Length: 14
+        
+oilp.husk:
+	idle: v19
+		Start: 28
+	fire-start: flmspt
+		Length: *
+		Offset: 7,-15
+		ZOffset: 1
+	fire-loop: flmspt
+		Start: 50
+		Length: *
+		Offset: 7,-15
+		ZOffset: 1

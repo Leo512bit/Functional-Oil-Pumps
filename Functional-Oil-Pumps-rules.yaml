@@ -1,0 +1,120 @@
+World:
+	MissionData:
+		Briefing: This map contains the Functional Oil Pumps by LeonardMT (Leo512bit on Github)\n     Engineers can now capture oil pumps and repair its husks.\n\nMIT License\n\n Copyright (c) 2021 Leonard Teyssier aka LeonardMT aka Leo512bit\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+OILP.husk:
+	Inherits: ^TechBuilding
+	RenderSprites:
+		Palette: player
+	Tooltip:
+		Name: Husk (Oil Pump)
+	WithSpriteBody:
+	WithIdleOverlay:
+		StartSequence: fire-start
+		Sequence: fire-loop
+	CapturableProgressBar:
+	CapturableProgressBlink:
+	CaptureManager:
+	Capturable:
+		Types: building-husk
+	TransformOnCapture: #disable if you want
+		IntoActor: OILP
+		ForceHealthPercentage: 50 #change if you want
+	Targetable:
+		TargetTypes: building-husk
+
+OILP:
+	Inherits: ^TechBuilding
+	Tooltip:
+		Name: Oil Pump
+	TooltipDescription@ally:
+		Description: Provides additional funds.
+		ValidStances: Ally
+	TooltipDescription@other:
+		Description: Capture to receive additional funds.
+	CaptureManager:
+	Capturable:
+		Types: building
+	CapturableProgressBar:
+	CapturableProgressBlink:
+	EngineerRepairable:
+	CashTrickler:
+		Interval: 750 #change if you want
+		Amount: 50 #change if you want
+	GpsDot:
+		String: Oil #For GPS don't change
+	RevealsShroud:
+		Range: 3c0 #change if you want
+	SpawnActorOnDeath:
+		Actor: OILP.husk
+		OwnerType: InternalName
+	TooltipDescription@ally:
+		Description: Provides additional funds.
+		ValidStances: Ally
+	TooltipDescription@other:
+		Description: Capture to receive additional funds.
+		ValidStances: Neutral, Enemy
+	Explodes:
+		Weapon: BarrelExplode #change if you want
+	OwnerLostAction:
+		Action: ChangeOwner
+	UpdatesDerrickCount:
+
+E6:
+	Inherits: ^Soldier
+	Inherits@selection: ^SelectableSupportUnit
+	Buildable:
+		Queue: Infantry
+		BuildAtProductionType: Soldier
+		BuildPaletteOrder: 60
+		Prerequisites: ~barracks, ~techlevel.infonly
+		Description: Infiltrates and captures\nenemy structures.\n  Unarmed
+	Valued:
+		Cost: 400
+	Tooltip:
+		Name: Engineer
+	UpdatesPlayerStatistics:
+		AddToArmyValue: true
+	WithInfantryBody:
+		RequiresCondition: !parachute
+	WithInfantryBody@PARACHUTE:
+		StandSequences: parachute
+		RequiresCondition: parachute
+	Passenger:
+		PipType: Yellow
+	EngineerRepair:
+	RepairsBridges:
+	CaptureManager:
+	GrantConditionOnPrerequisite@GLOBALREUSABLEENGINEER:
+		Condition: global-reusable-engineers
+		Prerequisites: global-reusable-engineers
+	Captures:
+		RequiresCondition: !global-reusable-engineers
+		CaptureTypes: building
+		PlayerExperience: 25
+		CaptureDelay: 200
+	Captures@REUSABLE:
+		RequiresCondition: global-reusable-engineers
+		CaptureTypes: building
+		PlayerExperience: 25
+		CaptureDelay: 375
+		ConsumedByCapture: False
+		EnterCursor: ability
+	Captures@husk: #disable if you want
+		RequiresCondition: !global-reusable-engineers
+		CaptureTypes: building-husk
+		PlayerExperience: 25
+		CaptureDelay: 200
+		ConsumedByCapture: true
+		EnterCursor: goldwrench
+	Captures@husk-reusable: #disable if you want
+		RequiresCondition: global-reusable-engineers
+		CaptureTypes: building-husk
+		PlayerExperience: 25
+		CaptureDelay: 375
+		EnterCursor: goldwrench
+		ConsumedByCapture: False
+		EnterBlockedCursor: move-blocked
+	Voiced:
+		VoiceSet: EngineerVoice
+	-AttackFrontal:
